@@ -29,17 +29,26 @@ export const getPosts = query({
   handler: async (ctx) => {
     const posts = await ctx.db.query("posts").order("desc").collect();
 
-    return await Promise.all(
-      posts.map(async (post) => {
-        const resolvedImageUrl = post.imageStorageId
-          ? await ctx.storage.getUrl(post.imageStorageId)
-          : null;
-        return {
-          ...post,
-          imageUrl: resolvedImageUrl,
-        };
-      })
-    );
+    const postsWithImages = [];
+    for (const post of posts) {
+      let resolvedImageUrl = null;
+      if (post.imageStorageId) {
+        try {
+          resolvedImageUrl = await ctx.storage.getUrl(post.imageStorageId);
+        } catch (error) {
+          console.error(
+            `Failed to resolve image URL for post ${post._id}:`,
+            error
+          );
+        }
+      }
+      postsWithImages.push({
+        ...post,
+        imageUrl: resolvedImageUrl,
+      });
+    }
+
+    return postsWithImages;
   },
 });
 

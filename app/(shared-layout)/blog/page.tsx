@@ -4,10 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { fetchQuery } from "convex/nextjs";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
-import { connection } from "next/server";
 import { cacheLife, cacheTag } from "next/cache";
 
 export const metadata: Metadata = {
@@ -28,9 +25,7 @@ const Blog = async () => {
           Insights, thoughts and trends from the world.
         </p>
       </div>
-      {/* <Suspense fallback={<SkeletonLoadingUi />}> */}
-        <LoadBlogs />
-      {/* </Suspense> */}
+      <LoadBlogs />
     </div>
   );
 };
@@ -38,11 +33,9 @@ const Blog = async () => {
 export default Blog;
 
 export async function LoadBlogs() {
-  // await connection();
   "use cache";
   cacheLife("hours");
   cacheTag("blog");
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
   const posts = await fetchQuery(api.posts.getPosts);
 
   return (
@@ -78,25 +71,6 @@ export async function LoadBlogs() {
           </Link>
         </Card>
       ))}
-    </div>
-  );
-}
-
-export function SkeletonLoadingUi() {
-  return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {[...Array(6)].map((_, index) => {
-        return (
-          <div key={index} className="flex flex-col space-y-3">
-            <Skeleton className="h-48 w-full rounded-xl" />
-            <div className="space-y-2 flex flex-col">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-2/4" />
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }
