@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
         port: "",
       },
       {
-        hostname: "upbeat-bullfrog-607.convex.cloud",
+        hostname: "secret-dalmatian-982.convex.cloud",
         protocol: "https",
         port: "",
       },
