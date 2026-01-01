@@ -66,7 +66,7 @@ const Create = () => {
     });
   };
   return (
-    <div className="py-10">
+    <div className="py-28">
       <div className="text-center mb-10">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Create Post

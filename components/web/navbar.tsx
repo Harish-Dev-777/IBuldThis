@@ -13,7 +13,7 @@ const Navbar = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const router = useRouter();
   return (
-    <nav className="flex justify-between mt-5 mb-10">
+    <nav className="fixed top-0 inset-x-0 z-50 flex justify-between items-center px-6 py-4 bg-background/60 backdrop-blur-xl border-b border-border/40 transition-all duration-300">
       <div>
         <Link href="/">
           <h1 className="font-bold text-2xl ">
