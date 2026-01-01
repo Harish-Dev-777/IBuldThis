@@ -6,6 +6,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
+import { Suspense } from "react";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Blog | IBuildThis",
@@ -25,7 +27,9 @@ const Blog = async () => {
           Insights, thoughts and trends from the world.
         </p>
       </div>
-      <LoadBlogs />
+      <Suspense fallback={<Loading />}>
+        <LoadBlogs />
+      </Suspense>
     </div>
   );
 };
@@ -33,9 +37,10 @@ const Blog = async () => {
 export default Blog;
 
 export async function LoadBlogs() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("blog");
+  // "use cache";
+  // cacheLife("hours");
+  // cacheTag("blog");
+  await connection();
   const posts = await fetchQuery(api.posts.getPosts);
 
   return (
@@ -71,6 +76,14 @@ export async function LoadBlogs() {
           </Link>
         </Card>
       ))}
+    </div>
+  );
+}
+
+export function Loading() {
+  return (
+    <div>
+      <p>Loading...</p>
     </div>
   );
 }
