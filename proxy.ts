@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { isAuthenticated } from "@/lib/auth-server";
 
-// Define protected routes that require authentication
+// Define protected routes
 const protectedRoutes = ["/create", "/blog"];
 
-export default function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if the current path is a protected route
@@ -13,11 +13,9 @@ export default function proxy(request: NextRequest) {
   );
 
   if (isProtectedRoute) {
-    // Check if user has a Convex auth token
-    const convexAuthToken = request.cookies.get("__convex_auth_token");
+    const isAuth = await isAuthenticated();
 
-    if (!convexAuthToken) {
-      // Redirect to login if not authenticated
+    if (!isAuth) {
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
@@ -28,15 +26,5 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|_next).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|_next).*)"],
 };
