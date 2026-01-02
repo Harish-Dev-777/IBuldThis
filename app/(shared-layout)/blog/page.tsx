@@ -14,10 +14,18 @@ export const metadata: Metadata = {
   authors: [{ name: "Harish" }],
 };
 
+import { isAuthenticated } from "@/lib/auth-server";
+import { redirect } from "next/navigation";
+
 const Blog = async () => {
+  const isAuth = await isAuthenticated();
+
+  if (!isAuth) {
+    redirect("/auth/login?redirect=/blog");
+  }
   return (
-    <div className="container mx-auto px-4 py-28">
-      <div className="text-center pb-12">
+    <div className="container mx-auto px-4 py-28 relative z-10">
+      <div className="text-center pb-12 relative z-20">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Our Blogs
         </h1>
@@ -25,7 +33,9 @@ const Blog = async () => {
           Insights, thoughts and trends from the world.
         </p>
       </div>
-      <LoadBlogs />
+      <div className="relative z-10">
+        <LoadBlogs />
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { fetchMutation } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 
 import { getToken } from "@/lib/auth-server";
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createBlogAction(formData: FormData) {
   try {
@@ -80,6 +80,6 @@ export async function createBlogAction(formData: FormData) {
     };
   }
   // revalidatePath("/blog");
-  updateTag("blog");
+  revalidateTag("blog");
   return { success: true };
 }
