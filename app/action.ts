@@ -15,16 +15,32 @@ export async function createBlogAction(formData: FormData) {
       content: formData.get("content") as string,
       image: formData.get("image") as File,
     };
+
     const parsed = postSchema.safeParse(values);
     if (!parsed.success) {
-      throw new Error("something went wrong");
+      console.error("Validation error:", parsed.error);
+      return {
+        error: "Invalid form data. Please check your inputs.",
+      };
     }
+
     const token = await getToken();
+    if (!token) {
+      console.error("No authentication token found");
+      return {
+        error:
+          "You must be logged in to create a post. Please log in and try again.",
+      };
+    }
+
+    console.log("Generating upload URL...");
     const imageUrl = await fetchMutation(
       api.posts.generateImageUploadUrl,
       {},
       { token }
     );
+
+    console.log("Uploading image...");
     const uploadResult = await fetch(imageUrl, {
       method: "POST",
       headers: {
@@ -34,11 +50,15 @@ export async function createBlogAction(formData: FormData) {
     });
 
     if (!uploadResult.ok) {
+      console.error("Image upload failed:", await uploadResult.text());
       return {
-        error: "Failed to upload image",
+        error: "Failed to upload image. Please try again.",
       };
     }
+
     const { storageId } = await uploadResult.json();
+    console.log("Creating post with storageId:", storageId);
+
     await fetchMutation(
       api.posts.createPost,
       {
@@ -48,9 +68,15 @@ export async function createBlogAction(formData: FormData) {
       },
       { token }
     );
-  } catch {
+
+    console.log("Post created successfully");
+  } catch (error) {
+    console.error("Error creating post:", error);
     return {
-      error: "Failed to create post",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to create post. Please try again.",
     };
   }
   // revalidatePath("/blog");

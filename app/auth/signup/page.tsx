@@ -28,6 +28,7 @@ import { Loader2 } from "lucide-react";
 const SignUp = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -36,6 +37,7 @@ const SignUp = () => {
       password: "",
     },
   });
+
   const onSubmit = (data: z.infer<typeof signUpSchema>) => {
     startTransition(async () => {
       await authClient.signUp.email({
@@ -45,7 +47,12 @@ const SignUp = () => {
         fetchOptions: {
           onSuccess: () => {
             toast.success("Account created successfully");
-            router.push("/");
+
+            // Get redirect URL from query params or default to home
+            const searchParams = new URLSearchParams(window.location.search);
+            const redirectTo = searchParams.get("redirect") || "/";
+
+            router.push(redirectTo);
           },
           onError: (error) => {
             toast.error(error.error.message);
@@ -54,6 +61,7 @@ const SignUp = () => {
       });
     });
   };
+
   return (
     <Card>
       <CardHeader>

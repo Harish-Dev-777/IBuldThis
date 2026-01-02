@@ -1,7 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-
 import Image from "next/image";
 import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -11,7 +10,6 @@ import CommandSection from "@/components/web/CommentSection";
 import { Metadata } from "next";
 import { PostPresence } from "@/components/web/postPresence";
 import { getToken } from "@/lib/auth-server";
-import { redirect } from "next/navigation";
 
 interface postIdRouteProps {
   params: Promise<{
@@ -40,6 +38,7 @@ export async function generateMetadata({
 export default async function BlogPost({ params }: postIdRouteProps) {
   const { postId } = await params;
   const token = await getToken();
+
   const [post, preloadedComments, userId] = await Promise.all([
     fetchQuery(api.posts.getPostById, { postId: postId }),
     preloadQuery(api.comments.getCommentsByPostId, {
@@ -48,26 +47,23 @@ export default async function BlogPost({ params }: postIdRouteProps) {
     fetchQuery(api.presence.getUserId, {}, { token }),
   ]);
 
-  if (!userId) {
-    return redirect("/auth/login");
-  }
-
   if (!post) {
     return (
-      <div>
+      <div className="py-28">
         <h1 className="text-5xl font-extrabold text-center tracking-tight">
           Post not found
         </h1>
       </div>
     );
   }
+
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 animate-in fade-in duration-500 relative">
       <Link href="/blog" className={buttonVariants({ className: "mb-6" })}>
         <ArrowLeft className="size-4" />
         Back to blog
       </Link>
-      <div className="relative w-full h-[400px] mb-8 rounded-xl  overflow-hidden shadow-sm">
+      <div className="relative w-full h-[400px] mb-8 rounded-xl overflow-hidden shadow-sm">
         <Image
           src={
             post.imageUrl ??

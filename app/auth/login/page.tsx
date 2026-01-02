@@ -27,6 +27,7 @@ import z from "zod";
 const Login = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -34,6 +35,7 @@ const Login = () => {
       password: "",
     },
   });
+
   const onSubmit = (data: z.infer<typeof loginSchema>) => {
     startTransition(async () => {
       await authClient.signIn.email({
@@ -42,7 +44,12 @@ const Login = () => {
         fetchOptions: {
           onSuccess: () => {
             toast.success("Logged in successfully");
-            router.push("/");
+
+            // Get redirect URL from query params or default to home
+            const searchParams = new URLSearchParams(window.location.search);
+            const redirectTo = searchParams.get("redirect") || "/";
+
+            router.push(redirectTo);
           },
           onError: (error) => {
             toast.error(error.error.message);
@@ -51,6 +58,7 @@ const Login = () => {
       });
     });
   };
+
   return (
     <Card>
       <CardHeader>

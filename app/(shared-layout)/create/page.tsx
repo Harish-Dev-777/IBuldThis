@@ -17,9 +17,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { api } from "@/convex/_generated/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -28,9 +26,9 @@ import { toast } from "sonner";
 import z from "zod";
 
 const Create = () => {
-  const mutation = useMutation(api.posts.createPost);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
@@ -47,24 +45,21 @@ const Create = () => {
     formData.append("image", values.image);
 
     startTransition(async () => {
-      // mutation({
-      //   title: values.title,
-      //   body: values.content,
-      // });
-
-      console.log(values);
-      console.log("This is from the client...");
-
       const result = await createBlogAction(formData);
+
       if (result?.error) {
         toast.error(result.error);
         return;
       }
+
       form.reset();
       toast.success("Blog article created successfully");
+
+      // Redirect to blog page to see the newly created post
       router.push("/blog");
     });
   };
+
   return (
     <div className="py-28">
       <div className="text-center mb-10">
