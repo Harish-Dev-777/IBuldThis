@@ -16,8 +16,10 @@ import { isAuthenticated } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import { ArrowRight, CalendarDays, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { connection } from "next/server";
 
 const Blog = async () => {
+  await connection();
   const isAuth = await isAuthenticated();
 
   if (!isAuth) {
