@@ -14,8 +14,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Harish" }],
 };
 
-export const dynamic = "force-dynamic";
-
 import { isAuthenticated } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 
@@ -45,9 +43,9 @@ const Blog = async () => {
 export default Blog;
 
 export async function LoadBlogs() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("blog");
+  // "use cache";
+  // cacheLife("hours");
+  // cacheTag("blog");
   const posts = await fetchQuery(api.posts.getPosts);
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
