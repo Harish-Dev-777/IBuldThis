@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Harish" }],
 };
 
+export const dynamic = "force-dynamic";
+
 import { isAuthenticated } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 
