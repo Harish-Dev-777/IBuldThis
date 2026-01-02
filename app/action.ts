@@ -72,7 +72,7 @@ export async function createBlogAction(formData: FormData) {
           : "Failed to create post. Please try again.",
     };
   }
-  // revalidatePath("/blog", "page");
-  // revalidateTag("blog");
+  revalidatePath("/blog", "page");
+  revalidateTag("blog", "days");
   return { success: true };
 }
