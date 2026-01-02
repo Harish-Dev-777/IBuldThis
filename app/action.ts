@@ -4,7 +4,7 @@ import { postSchema } from "./schemas/blog";
 import { z } from "zod";
 import { fetchAuthMutation, getToken } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
 export async function createBlogAction(formData: FormData) {
   try {
@@ -73,6 +73,12 @@ export async function createBlogAction(formData: FormData) {
     };
   }
   revalidatePath("/blog", "page");
-  revalidateTag("blog", "days");
+  // revalidateTag("blog", "days"); // Switching to updateTag for instant expiration
+  try {
+    updateTag("blog");
+  } catch (e) {
+    // Fallback if updateTag is not found (just in case version mismatch)
+    console.log("updateTag not found, ignoring");
+  }
   return { success: true };
 }
