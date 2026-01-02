@@ -1,5 +1,6 @@
 "use client";
 import { loginSchema } from "@/app/schemas/auth";
+import { useConvexAuth } from "convex/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +20,7 @@ import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useTransition, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -27,6 +28,15 @@ import z from "zod";
 const Login = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { isAuthenticated, isLoading } = useConvexAuth();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectTo = searchParams.get("redirect") || "/";
+      router.push(redirectTo);
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const form = useForm({
     resolver: zodResolver(loginSchema),

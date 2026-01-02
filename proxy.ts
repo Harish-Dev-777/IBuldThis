@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 // Define protected routes that require authentication
 const protectedRoutes = ["/create", "/blog"];
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if the current path is a protected route
