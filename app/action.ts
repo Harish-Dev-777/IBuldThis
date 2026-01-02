@@ -2,10 +2,8 @@
 
 import { postSchema } from "./schemas/blog";
 import { z } from "zod";
-import { fetchMutation } from "convex/nextjs";
+import { fetchAuthMutation, getToken } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
-
-import { getToken } from "@/lib/auth-server";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createBlogAction(formData: FormData) {
@@ -34,10 +32,9 @@ export async function createBlogAction(formData: FormData) {
     }
 
     console.log("Generating upload URL...");
-    const imageUrl = await fetchMutation(
+    const imageUrl = await fetchAuthMutation(
       api.posts.generateImageUploadUrl,
-      {},
-      { token }
+      {}
     );
 
     console.log("Uploading image...");
@@ -59,15 +56,11 @@ export async function createBlogAction(formData: FormData) {
     const { storageId } = await uploadResult.json();
     console.log("Creating post with storageId:", storageId);
 
-    await fetchMutation(
-      api.posts.createPost,
-      {
-        title: parsed.data.title,
-        body: parsed.data.content,
-        imageStorageId: storageId,
-      },
-      { token }
-    );
+    await fetchAuthMutation(api.posts.createPost, {
+      title: parsed.data.title,
+      body: parsed.data.content,
+      imageStorageId: storageId,
+    });
 
     console.log("Post created successfully");
   } catch (error) {
@@ -79,7 +72,7 @@ export async function createBlogAction(formData: FormData) {
           : "Failed to create post. Please try again.",
     };
   }
-  // revalidatePath("/blog");
-  revalidateTag("blog");
+  // revalidatePath("/blog", "page");
+  // revalidateTag("blog");
   return { success: true };
 }

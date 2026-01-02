@@ -58,8 +58,11 @@ export default async function BlogPost({ params }: postIdRouteProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 animate-in fade-in duration-500 relative">
-      <Link href="/blog" className={buttonVariants({ className: "mb-6" })}>
+    <div className="max-w-3xl mx-auto py-28 px-4 animate-in fade-in duration-500 relative ">
+      <Link
+        href="/blog"
+        className={buttonVariants({ className: "mb-6 relative " })}
+      >
         <ArrowLeft className="size-4" />
         Back to blog
       </Link>

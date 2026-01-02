@@ -24,8 +24,8 @@ const Blog = async () => {
     redirect("/auth/login?redirect=/blog");
   }
   return (
-    <div className="container mx-auto px-4 py-28 relative z-10">
-      <div className="text-center pb-12 relative z-20">
+    <div className="container mx-auto px-4 py-28 relative">
+      <div className="text-center pb-12 relative">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Our Blogs
         </h1>
@@ -33,7 +33,7 @@ const Blog = async () => {
           Insights, thoughts and trends from the world.
         </p>
       </div>
-      <div className="relative z-10">
+      <div className="relative">
         <LoadBlogs />
       </div>
     </div>
