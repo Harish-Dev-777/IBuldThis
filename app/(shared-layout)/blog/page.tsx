@@ -47,9 +47,9 @@ const Blog = async () => {
 export default Blog;
 
 export async function LoadBlogs() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("blog");
+  // "use cache"; // Removed "use cache" to prevent conflicts with dynamic auth
+  // cacheLife("hours");
+  // cacheTag("blog");
   const posts = await fetchQuery(api.posts.getPosts);
 
   if (!posts || posts.length === 0) {
